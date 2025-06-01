@@ -1,11 +1,12 @@
 
 import React, { useEffect, useRef } from 'react';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, X } from 'lucide-react';
 import { ChargingStation } from '@/hooks/useChargingStations';
+
+// Dynamic import for Leaflet to avoid SSR issues
+let L: any = null;
 
 interface OpenStreetMapProps {
   stations: ChargingStation[];
@@ -19,8 +20,8 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
   onStationSelect 
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<L.Marker[]>([]);
+  const mapRef = useRef<any>(null);
+  const markersRef = useRef<any[]>([]);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -48,26 +49,40 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
     }
   };
 
-  // Fix for default markers in Leaflet
+  // Initialize Leaflet dynamically
   useEffect(() => {
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-      iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    });
-  }, []);
+    const initLeaflet = async () => {
+      if (!L) {
+        try {
+          L = await import('leaflet');
+          // Import CSS
+          await import('leaflet/dist/leaflet.css');
+          
+          // Fix for default markers in Leaflet
+          delete (L.Icon.Default.prototype as any)._getIconUrl;
+          L.Icon.Default.mergeOptions({
+            iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+            iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+          });
+        } catch (error) {
+          console.error('Failed to load Leaflet:', error);
+          return;
+        }
+      }
 
-  useEffect(() => {
-    if (!mapContainer.current) return;
+      if (!mapContainer.current || mapRef.current) return;
 
-    // Initialize map
-    mapRef.current = L.map(mapContainer.current).setView([37.7749, -122.4194], 10);
+      // Initialize map
+      mapRef.current = L.map(mapContainer.current).setView([37.7749, -122.4194], 10);
 
-    // Add OpenStreetMap tiles (free)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(mapRef.current);
+      // Add OpenStreetMap tiles (free)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(mapRef.current);
+    };
+
+    initLeaflet();
 
     return () => {
       if (mapRef.current) {
@@ -78,7 +93,7 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
   }, []);
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || !L) return;
 
     // Clear existing markers
     markersRef.current.forEach(marker => marker.remove());
