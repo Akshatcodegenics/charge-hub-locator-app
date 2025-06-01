@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useChargingStations } from '@/hooks/useChargingStations';
 import { useAuth } from '@/contexts/AuthContext';
 import StationDialog from '@/components/StationDialog';
-import VirtualMap from '@/components/VirtualMap';
+import OpenStreetMap from '@/components/OpenStreetMap';
 
 const Map = () => {
   const [selectedStation, setSelectedStation] = useState<any>(null);
@@ -159,7 +159,7 @@ const Map = () => {
 
         {/* Map Area */}
         <div className="flex-1 relative">
-          <VirtualMap
+          <OpenStreetMap
             stations={filteredStations}
             selectedStation={selectedStation}
             onStationSelect={setSelectedStation}
