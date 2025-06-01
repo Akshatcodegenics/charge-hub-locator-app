@@ -6,16 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
 import { useChargingStations } from '@/hooks/useChargingStations';
 import { useAuth } from '@/contexts/AuthContext';
 import StationDialog from '@/components/StationDialog';
-import InteractiveMap from '@/components/InteractiveMap';
+import VirtualMap from '@/components/VirtualMap';
 
 const Map = () => {
   const [selectedStation, setSelectedStation] = useState<any>(null);
   const [statusFilter, setStatusFilter] = useState('all');
-  const [mapboxToken, setMapboxToken] = useState('');
   const { stations, loading, createStation } = useChargingStations();
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
@@ -28,19 +26,6 @@ const Map = () => {
   const filteredStations = stations.filter(station => 
     statusFilter === 'all' || station.status.toLowerCase() === statusFilter
   );
-
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'active':
-        return 'bg-green-500';
-      case 'maintenance':
-        return 'bg-yellow-500';
-      case 'inactive':
-        return 'bg-red-500';
-      default:
-        return 'bg-gray-500';
-    }
-  };
 
   const getStatusBadgeColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -105,35 +90,6 @@ const Map = () => {
           </div>
         </div>
       </nav>
-
-      {/* Mapbox API Key Input */}
-      {!mapboxToken && (
-        <div className="bg-blue-50 border-b border-blue-200 p-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-blue-800">Configure Mapbox API Key</h3>
-                <p className="text-sm text-blue-600">Enter your Mapbox public token to enable the interactive map</p>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  placeholder="Mapbox API Key"
-                  value={mapboxToken}
-                  onChange={(e) => setMapboxToken(e.target.value)}
-                  className="w-64"
-                />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => window.open('https://mapbox.com', '_blank')}
-                >
-                  Get API Key
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="flex h-[calc(100vh-64px)]">
         {/* Sidebar */}
@@ -203,11 +159,10 @@ const Map = () => {
 
         {/* Map Area */}
         <div className="flex-1 relative">
-          <InteractiveMap
+          <VirtualMap
             stations={filteredStations}
             selectedStation={selectedStation}
             onStationSelect={setSelectedStation}
-            mapboxToken={mapboxToken}
           />
         </div>
       </div>
