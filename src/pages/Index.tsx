@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom';
 import { MapPin, Zap, Shield, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
+  const { user } = useAuth();
+
   const features = [
     {
       icon: <MapPin className="h-12 w-12 text-blue-500" />,
@@ -14,8 +17,8 @@ const Index = () => {
     },
     {
       icon: <Zap className="h-12 w-12 text-green-500" />,
-      title: "Real-Time Status",
-      description: "Check availability, power output, and connector types before you arrive."
+      title: "Real-Time Management",
+      description: "Create, update, and manage charging stations with full CRUD operations."
     },
     {
       icon: <Shield className="h-12 w-12 text-purple-500" />,
@@ -40,18 +43,26 @@ const Index = () => {
               <span className="text-xl font-bold text-gray-900">ChargeHub</span>
             </div>
             <div className="flex items-center space-x-4">
-              <Link to="/stations">
-                <Button variant="ghost">Stations</Button>
-              </Link>
-              <Link to="/map">
-                <Button variant="ghost">Map View</Button>
-              </Link>
-              <Link to="/login">
-                <Button variant="outline">Login</Button>
-              </Link>
-              <Link to="/register">
-                <Button>Get Started</Button>
-              </Link>
+              {user ? (
+                <>
+                  <Link to="/stations">
+                    <Button variant="ghost">Stations</Button>
+                  </Link>
+                  <Link to="/map">
+                    <Button variant="ghost">Map View</Button>
+                  </Link>
+                  <span className="text-sm text-gray-600">Welcome, {user.email}</span>
+                </>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <Button variant="outline">Login</Button>
+                  </Link>
+                  <Link to="/register">
+                    <Button>Get Started</Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -62,27 +73,44 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 animate-fade-in">
-              Find Your Perfect
+              Manage Your EV
               <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent block">
-                Charging Station
+                Charging Network
               </span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8 animate-fade-in">
-              Discover, manage, and navigate to electric vehicle charging stations with our comprehensive platform. 
-              Real-time availability, detailed specifications, and community-driven updates.
+              Complete charging station management platform with real-time CRUD operations, 
+              interactive mapping, and secure user authentication.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
-              <Link to="/map">
-                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3">
-                  <MapPin className="mr-2 h-5 w-5" />
-                  Explore Map
-                </Button>
-              </Link>
-              <Link to="/stations">
-                <Button size="lg" variant="outline" className="px-8 py-3">
-                  View All Stations
-                </Button>
-              </Link>
+              {user ? (
+                <>
+                  <Link to="/map">
+                    <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3">
+                      <MapPin className="mr-2 h-5 w-5" />
+                      View Map
+                    </Button>
+                  </Link>
+                  <Link to="/stations">
+                    <Button size="lg" variant="outline" className="px-8 py-3">
+                      Manage Stations
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/register">
+                    <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3">
+                      Get Started
+                    </Button>
+                  </Link>
+                  <Link to="/login">
+                    <Button size="lg" variant="outline" className="px-8 py-3">
+                      Sign In
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -93,10 +121,10 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Everything You Need for EV Charging
+              Complete Charging Station Management
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Our platform provides comprehensive tools for finding, managing, and sharing charging station information.
+              Full CRUD operations, real-time updates, and interactive mapping for modern EV infrastructure.
             </p>
           </div>
           
@@ -125,20 +153,20 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center text-white">
             <h2 className="text-3xl md:text-4xl font-bold mb-12">
-              Growing Network of Charging Stations
+              Powerful Features for Modern EV Management
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold mb-2">1,200+</div>
-                <div className="text-xl opacity-90">Active Stations</div>
+                <div className="text-4xl md:text-5xl font-bold mb-2">100%</div>
+                <div className="text-xl opacity-90">Real-time Updates</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold mb-2">50+</div>
-                <div className="text-xl opacity-90">Cities Covered</div>
+                <div className="text-4xl md:text-5xl font-bold mb-2">CRUD</div>
+                <div className="text-xl opacity-90">Full Operations</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold mb-2">10k+</div>
-                <div className="text-xl opacity-90">Happy Users</div>
+                <div className="text-4xl md:text-5xl font-bold mb-2">Secure</div>
+                <div className="text-xl opacity-90">Authentication</div>
               </div>
             </div>
           </div>
@@ -152,19 +180,36 @@ const Index = () => {
             Ready to Get Started?
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Join our community and help build the future of electric vehicle infrastructure.
+            Join our platform and start managing your charging station network today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register">
-              <Button size="lg" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-3">
-                Create Account
-              </Button>
-            </Link>
-            <Link to="/stations">
-              <Button size="lg" variant="outline" className="px-8 py-3">
-                Browse Stations
-              </Button>
-            </Link>
+            {user ? (
+              <>
+                <Link to="/stations">
+                  <Button size="lg" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-3">
+                    Manage Stations
+                  </Button>
+                </Link>
+                <Link to="/map">
+                  <Button size="lg" variant="outline" className="px-8 py-3">
+                    View Map
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/register">
+                  <Button size="lg" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-3">
+                    Create Account
+                  </Button>
+                </Link>
+                <Link to="/login">
+                  <Button size="lg" variant="outline" className="px-8 py-3">
+                    Sign In
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -178,7 +223,7 @@ const Index = () => {
               <span className="text-xl font-bold">ChargeHub</span>
             </div>
             <div className="text-gray-400">
-              © 2024 ChargeHub. Building the future of EV infrastructure.
+              © 2024 ChargeHub. Complete EV charging station management platform.
             </div>
           </div>
         </div>

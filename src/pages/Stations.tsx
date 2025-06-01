@@ -1,75 +1,34 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Zap, MapPin, Plus, Filter, Search } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Zap, MapPin, Plus, Filter, Search, Edit, Trash2, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { useChargingStations } from '@/hooks/useChargingStations';
+import { useAuth } from '@/contexts/AuthContext';
+import StationDialog from '@/components/StationDialog';
 
 const Stations = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [connectorFilter, setConnectorFilter] = useState('all');
+  const { stations, loading, createStation, updateStation, deleteStation } = useChargingStations();
+  const { signOut, user } = useAuth();
+  const navigate = useNavigate();
 
-  // Mock data for charging stations
-  const stations = [
-    {
-      id: 1,
-      name: "Downtown Tesla Supercharger",
-      location: "123 Main St, San Francisco, CA",
-      latitude: 37.7749,
-      longitude: -122.4194,
-      status: "Active",
-      powerOutput: 250,
-      connectorType: "Tesla Supercharger",
-      available: 6,
-      total: 8
-    },
-    {
-      id: 2,
-      name: "City Center Fast Charge",
-      location: "456 Market St, San Francisco, CA",
-      latitude: 37.7849,
-      longitude: -122.4094,
-      status: "Active",
-      powerOutput: 150,
-      connectorType: "CCS",
-      available: 3,
-      total: 4
-    },
-    {
-      id: 3,
-      name: "Airport Charging Hub",
-      location: "789 Airport Blvd, San Francisco, CA",
-      latitude: 37.7649,
-      longitude: -122.4294,
-      status: "Maintenance",
-      powerOutput: 100,
-      connectorType: "CHAdeMO",
-      available: 0,
-      total: 6
-    },
-    {
-      id: 4,
-      name: "Mall Charging Station",
-      location: "321 Shopping Ave, San Francisco, CA",
-      latitude: 37.7549,
-      longitude: -122.4394,
-      status: "Active",
-      powerOutput: 75,
-      connectorType: "Type 2",
-      available: 2,
-      total: 3
-    }
-  ];
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   const filteredStations = stations.filter(station => {
     const matchesSearch = station.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         station.location.toLowerCase().includes(searchTerm.toLowerCase());
+                         `${station.latitude}, ${station.longitude}`.includes(searchTerm);
     const matchesStatus = statusFilter === 'all' || station.status.toLowerCase() === statusFilter;
-    const matchesConnector = connectorFilter === 'all' || station.connectorType === connectorFilter;
+    const matchesConnector = connectorFilter === 'all' || station.connector_type === connectorFilter;
     
     return matchesSearch && matchesStatus && matchesConnector;
   });
@@ -87,12 +46,30 @@ const Stations = () => {
     }
   };
 
-  const getAvailabilityColor = (available: number, total: number) => {
-    const ratio = available / total;
-    if (ratio > 0.5) return 'text-green-600';
-    if (ratio > 0.2) return 'text-yellow-600';
-    return 'text-red-600';
+  const handleCreateStation = async (stationData: any) => {
+    await createStation(stationData);
   };
+
+  const handleUpdateStation = async (stationData: any, stationId: string) => {
+    await updateStation(stationId, stationData);
+  };
+
+  const handleDeleteStation = async (stationId: string) => {
+    if (window.confirm('Are you sure you want to delete this charging station?')) {
+      await deleteStation(stationId);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading charging stations...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -105,15 +82,25 @@ const Stations = () => {
               <span className="text-xl font-bold text-gray-900">ChargeHub</span>
             </Link>
             <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-600">Welcome, {user?.email}</span>
               <Link to="/map">
                 <Button variant="ghost">
                   <MapPin className="mr-2 h-4 w-4" />
                   Map View
                 </Button>
               </Link>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Station
+              <StationDialog
+                trigger={
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Station
+                  </Button>
+                }
+                onSave={handleCreateStation}
+              />
+              <Button variant="outline" onClick={handleSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
               </Button>
             </div>
           </div>
@@ -124,7 +111,7 @@ const Stations = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Charging Stations</h1>
-          <p className="text-gray-600">Find and manage electric vehicle charging stations in your area</p>
+          <p className="text-gray-600">Manage electric vehicle charging stations ({stations.length} total)</p>
         </div>
 
         {/* Filters */}
@@ -183,31 +170,38 @@ const Stations = () => {
                 </div>
                 <CardDescription className="flex items-center text-gray-600">
                   <MapPin className="h-4 w-4 mr-1" />
-                  {station.location}
+                  {station.latitude.toFixed(6)}, {station.longitude.toFixed(6)}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Power Output:</span>
-                    <span className="font-semibold">{station.powerOutput} kW</span>
+                    <span className="font-semibold">{station.power_output} kW</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Connector:</span>
-                    <span className="font-semibold">{station.connectorType}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Availability:</span>
-                    <span className={`font-semibold ${getAvailabilityColor(station.available, station.total)}`}>
-                      {station.available}/{station.total} available
-                    </span>
+                    <span className="font-semibold">{station.connector_type}</span>
                   </div>
                   <div className="flex gap-2 pt-4">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      Edit
-                    </Button>
-                    <Button size="sm" className="flex-1">
-                      View Details
+                    <StationDialog
+                      trigger={
+                        <Button variant="outline" size="sm" className="flex-1">
+                          <Edit className="mr-1 h-3 w-3" />
+                          Edit
+                        </Button>
+                      }
+                      station={station}
+                      onSave={(data) => handleUpdateStation(data, station.id)}
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1 text-red-600 hover:text-red-700"
+                      onClick={() => handleDeleteStation(station.id)}
+                    >
+                      <Trash2 className="mr-1 h-3 w-3" />
+                      Delete
                     </Button>
                   </div>
                 </div>
@@ -222,7 +216,12 @@ const Stations = () => {
               <Search className="h-12 w-12 mx-auto" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No stations found</h3>
-            <p className="text-gray-600">Try adjusting your search criteria or filters</p>
+            <p className="text-gray-600">
+              {stations.length === 0 
+                ? "Get started by adding your first charging station!" 
+                : "Try adjusting your search criteria or filters"
+              }
+            </p>
           </div>
         )}
       </div>
