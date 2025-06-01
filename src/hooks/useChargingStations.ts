@@ -23,7 +23,7 @@ export const useChargingStations = () => {
 
   const fetchStations = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('charging_stations')
         .select('*')
         .order('created_at', { ascending: false });
@@ -43,7 +43,7 @@ export const useChargingStations = () => {
 
   const createStation = async (station: Omit<ChargingStation, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('charging_stations')
         .insert([{
           ...station,
@@ -72,7 +72,7 @@ export const useChargingStations = () => {
 
   const updateStation = async (id: string, updates: Partial<ChargingStation>) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('charging_stations')
         .update(updates)
         .eq('id', id)
@@ -101,7 +101,7 @@ export const useChargingStations = () => {
 
   const deleteStation = async (id: string) => {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('charging_stations')
         .delete()
         .eq('id', id);
