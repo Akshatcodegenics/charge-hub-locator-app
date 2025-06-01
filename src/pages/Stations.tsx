@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { useChargingStations } from '@/hooks/useChargingStations';
 import { useAuth } from '@/contexts/AuthContext';
 import StationDialog from '@/components/StationDialog';
+import AnimatedBackground from '@/components/AnimatedBackground';
 
 const Stations = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -36,13 +37,13 @@ const Stations = () => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'active':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/20 text-green-300 border-green-500/30';
       case 'maintenance':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
       case 'inactive':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-500/20 text-red-300 border-red-500/30';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
     }
   };
 
@@ -62,43 +63,46 @@ const Stations = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading charging stations...</p>
+      <div className="page-container flex items-center justify-center">
+        <AnimatedBackground />
+        <div className="text-center animate-fade-in">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-400 mx-auto"></div>
+          <p className="mt-6 text-white/80 font-inter text-lg">Loading charging stations...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="page-container">
+      <AnimatedBackground />
+      
       {/* Navigation */}
-      <nav className="bg-white border-b sticky top-0 z-50">
+      <nav className="nav-glass border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <Zap className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">ChargeHub</span>
+            <Link to="/" className="flex items-center space-x-2 hover-glow rounded-lg px-3 py-2">
+              <Zap className="h-8 w-8 text-blue-400 animate-pulse-glow" />
+              <span className="text-xl font-bold text-white font-poppins">ChargeHub</span>
             </Link>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Welcome, {user?.email}</span>
+              <span className="text-sm text-white/70 font-inter">Welcome, {user?.email}</span>
               <Link to="/map">
-                <Button variant="ghost">
+                <Button variant="ghost" className="text-white hover:bg-white/10 hover-lift">
                   <MapPin className="mr-2 h-4 w-4" />
                   Map View
                 </Button>
               </Link>
               <StationDialog
                 trigger={
-                  <Button>
+                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover-lift">
                     <Plus className="mr-2 h-4 w-4" />
                     Add Station
                   </Button>
                 }
                 onSave={handleCreateStation}
               />
-              <Button variant="outline" onClick={handleSignOut}>
+              <Button variant="outline" onClick={handleSignOut} className="border-white/20 text-white hover:bg-white/10 hover-lift">
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
               </Button>
@@ -107,31 +111,31 @@ const Stations = () => {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Charging Stations</h1>
-          <p className="text-gray-600">Manage electric vehicle charging stations ({stations.length} total)</p>
+        <div className="mb-8 animate-fade-in">
+          <h1 className="text-4xl font-bold gradient-text mb-2 font-poppins">Charging Stations</h1>
+          <p className="text-white/70 font-inter text-lg">Manage electric vehicle charging stations ({stations.length} total)</p>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+        <div className="glass-card rounded-xl p-6 mb-8 animate-fade-in-up animation-delay-200">
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 h-4 w-4" />
                 <Input
                   type="text"
                   placeholder="Search stations by name or location..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-blue-400"
                 />
               </div>
             </div>
             <div className="flex gap-4">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-40 bg-white/10 border-white/20 text-white">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -142,7 +146,7 @@ const Stations = () => {
                 </SelectContent>
               </Select>
               <Select value={connectorFilter} onValueChange={setConnectorFilter}>
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-48 bg-white/10 border-white/20 text-white">
                   <SelectValue placeholder="Connector Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -159,16 +163,16 @@ const Stations = () => {
 
         {/* Station Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredStations.map((station) => (
-            <Card key={station.id} className="hover:shadow-lg transition-shadow duration-200">
+          {filteredStations.map((station, index) => (
+            <Card key={station.id} className="glass-card hover-lift animate-fade-in-up border-white/20" style={{ animationDelay: `${index * 0.1}s` }}>
               <CardHeader>
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">{station.name}</CardTitle>
+                  <CardTitle className="text-lg text-white font-poppins">{station.name}</CardTitle>
                   <Badge className={getStatusColor(station.status)}>
                     {station.status}
                   </Badge>
                 </div>
-                <CardDescription className="flex items-center text-gray-600">
+                <CardDescription className="flex items-center text-white/60 font-inter">
                   <MapPin className="h-4 w-4 mr-1" />
                   {station.latitude.toFixed(6)}, {station.longitude.toFixed(6)}
                 </CardDescription>
@@ -176,17 +180,17 @@ const Stations = () => {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Power Output:</span>
-                    <span className="font-semibold">{station.power_output} kW</span>
+                    <span className="text-sm text-white/70 font-inter">Power Output:</span>
+                    <span className="font-semibold text-blue-300 font-inter">{station.power_output} kW</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Connector:</span>
-                    <span className="font-semibold">{station.connector_type}</span>
+                    <span className="text-sm text-white/70 font-inter">Connector:</span>
+                    <span className="font-semibold text-green-300 font-inter">{station.connector_type}</span>
                   </div>
                   <div className="flex gap-2 pt-4">
                     <StationDialog
                       trigger={
-                        <Button variant="outline" size="sm" className="flex-1">
+                        <Button variant="outline" size="sm" className="flex-1 border-white/20 text-white hover:bg-white/10">
                           <Edit className="mr-1 h-3 w-3" />
                           Edit
                         </Button>
@@ -197,7 +201,7 @@ const Stations = () => {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="flex-1 text-red-600 hover:text-red-700"
+                      className="flex-1 border-red-500/30 text-red-300 hover:bg-red-500/10"
                       onClick={() => handleDeleteStation(station.id)}
                     >
                       <Trash2 className="mr-1 h-3 w-3" />
@@ -211,12 +215,12 @@ const Stations = () => {
         </div>
 
         {filteredStations.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
+          <div className="text-center py-12 animate-fade-in">
+            <div className="text-white/40 mb-4">
               <Search className="h-12 w-12 mx-auto" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No stations found</h3>
-            <p className="text-gray-600">
+            <h3 className="text-lg font-semibold text-white mb-2 font-poppins">No stations found</h3>
+            <p className="text-white/70 font-inter">
               {stations.length === 0 
                 ? "Get started by adding your first charging station!" 
                 : "Try adjusting your search criteria or filters"
