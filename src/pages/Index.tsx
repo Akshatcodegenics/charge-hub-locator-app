@@ -61,12 +61,12 @@ const Index = () => {
                 <>
                   <Link to="/stations">
                     <Button variant="ghost" className="text-white hover:bg-white/20 transform hover:scale-105 transition-all duration-200">
-                      Stations
+                      <span className="text-white font-medium">Stations</span>
                     </Button>
                   </Link>
                   <Link to="/map">
                     <Button variant="ghost" className="text-white hover:bg-white/20 transform hover:scale-105 transition-all duration-200">
-                      Map View
+                      <span className="text-white font-medium">Map View</span>
                     </Button>
                   </Link>
                   <span className="text-sm text-white/80">Welcome, {user.email}</span>
@@ -75,12 +75,12 @@ const Index = () => {
                 <>
                   <Link to="/login">
                     <Button variant="outline" className="border-white/30 text-white hover:bg-white/20 transform hover:scale-105 transition-all duration-200">
-                      Login
+                      <span className="text-white font-medium">Login</span>
                     </Button>
                   </Link>
                   <Link to="/register">
                     <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg">
-                      Get Started
+                      <span className="text-white font-medium">Get Started</span>
                     </Button>
                   </Link>
                 </>
@@ -120,14 +120,14 @@ const Index = () => {
                 <>
                   <Link to="/map">
                     <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-4 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 shadow-xl">
-                      <MapPin className="mr-2 h-5 w-5" />
-                      View Map
-                      <ArrowRight className="ml-2 h-5 w-5" />
+                      <MapPin className="mr-2 h-5 w-5 text-white" />
+                      <span className="text-white font-medium">View Map</span>
+                      <ArrowRight className="ml-2 h-5 w-5 text-white" />
                     </Button>
                   </Link>
                   <Link to="/stations">
-                    <Button size="lg" variant="outline" className="px-8 py-4 border-white/30 text-white hover:bg-white/20 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300">
-                      Manage Stations
+                    <Button size="lg" variant="outline" className="px-8 py-4 border-white/30 text-white hover:bg-white/20 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 bg-transparent">
+                      <span className="text-white font-medium">Manage Stations</span>
                     </Button>
                   </Link>
                 </>
@@ -135,13 +135,13 @@ const Index = () => {
                 <>
                   <Link to="/register">
                     <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-4 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 shadow-xl">
-                      Get Started
-                      <ArrowRight className="ml-2 h-5 w-5" />
+                      <span className="text-white font-medium">Get Started</span>
+                      <ArrowRight className="ml-2 h-5 w-5 text-white" />
                     </Button>
                   </Link>
                   <Link to="/login">
-                    <Button size="lg" variant="outline" className="px-8 py-4 border-white/30 text-white hover:bg-white/20 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300">
-                      Sign In
+                    <Button size="lg" variant="outline" className="px-8 py-4 border-white/30 text-white hover:bg-white/20 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 bg-transparent">
+                      <span className="text-white font-medium">Sign In</span>
                     </Button>
                   </Link>
                 </>
@@ -225,12 +225,12 @@ const Index = () => {
               <>
                 <Link to="/stations">
                   <Button size="lg" className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white px-8 py-4 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 shadow-xl">
-                    Manage Stations
+                    <span className="text-white font-medium">Manage Stations</span>
                   </Button>
                 </Link>
                 <Link to="/map">
-                  <Button size="lg" variant="outline" className="px-8 py-4 border-white/30 text-white hover:bg-white/20 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300">
-                    View Map
+                  <Button size="lg" variant="outline" className="px-8 py-4 border-white/30 text-white hover:bg-white/20 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 bg-transparent">
+                    <span className="text-white font-medium">View Map</span>
                   </Button>
                 </Link>
               </>
@@ -238,12 +238,12 @@ const Index = () => {
               <>
                 <Link to="/register">
                   <Button size="lg" className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white px-8 py-4 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 shadow-xl">
-                    Create Account
+                    <span className="text-white font-medium">Create Account</span>
                   </Button>
                 </Link>
                 <Link to="/login">
-                  <Button size="lg" variant="outline" className="px-8 py-4 border-white/30 text-white hover:bg-white/20 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300">
-                    Sign In
+                  <Button size="lg" variant="outline" className="px-8 py-4 border-white/30 text-white hover:bg-white/20 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 bg-transparent">
+                    <span className="text-white font-medium">Sign In</span>
                   </Button>
                 </Link>
               </>
