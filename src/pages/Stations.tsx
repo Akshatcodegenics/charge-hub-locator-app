@@ -37,13 +37,13 @@ const Stations = () => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'active':
-        return 'bg-green-500/20 text-green-300 border-green-500/30';
+        return 'bg-green-500/20 text-green-700 border-green-500/30';
       case 'maintenance':
-        return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
+        return 'bg-yellow-500/20 text-yellow-700 border-yellow-500/30';
       case 'inactive':
-        return 'bg-red-500/20 text-red-300 border-red-500/30';
+        return 'bg-red-500/20 text-red-700 border-red-500/30';
       default:
-        return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
+        return 'bg-gray-500/20 text-gray-700 border-gray-500/30';
     }
   };
 
@@ -86,25 +86,34 @@ const Stations = () => {
               <span className="text-xl font-bold text-black font-poppins">ChargeHub</span>
             </Link>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-black font-inter">Welcome, {user?.email}</span>
+              <span className="text-sm text-black font-inter font-medium bg-gray-100 px-3 py-1 rounded-full">
+                Welcome, {user?.email}
+              </span>
               <Link to="/map">
-                <Button variant="ghost" className="text-black hover:bg-gray-100 hover-lift">
-                  <MapPin className="mr-2 h-4 w-4" />
-                  Map View
+                <Button 
+                  variant="ghost" 
+                  className="text-black font-medium bg-white/90 hover:bg-gray-100 border border-gray-300 hover-lift shadow-sm"
+                >
+                  <MapPin className="mr-2 h-4 w-4 text-black" />
+                  <span className="text-black font-inter font-medium">Map View</span>
                 </Button>
               </Link>
               <StationDialog
                 trigger={
-                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover-lift">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Station
+                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover-lift text-white font-medium shadow-lg">
+                    <Plus className="mr-2 h-4 w-4 text-white" />
+                    <span className="text-white font-inter font-medium">Add Station</span>
                   </Button>
                 }
                 onSave={handleCreateStation}
               />
-              <Button variant="outline" onClick={handleSignOut} className="border-gray-300 text-black hover:bg-gray-100 hover-lift">
-                <LogOut className="mr-2 h-4 w-4" />
-                Sign Out
+              <Button 
+                variant="outline" 
+                onClick={handleSignOut} 
+                className="border-red-400 text-red-600 hover:bg-red-50 hover:border-red-500 hover-lift font-medium bg-white/90"
+              >
+                <LogOut className="mr-2 h-4 w-4 text-red-600" />
+                <span className="text-red-600 font-inter font-medium">Sign Out</span>
               </Button>
             </div>
           </div>
@@ -115,7 +124,7 @@ const Stations = () => {
         {/* Header */}
         <div className="mb-8 animate-fade-in">
           <h1 className="text-4xl font-bold gradient-text mb-2 font-poppins">Charging Stations</h1>
-          <p className="text-gray-700 font-inter text-lg">Manage electric vehicle charging stations ({stations.length} total)</p>
+          <p className="text-black font-inter text-lg font-medium">Manage electric vehicle charging stations ({stations.length} total)</p>
         </div>
 
         {/* Filters */}
@@ -129,13 +138,13 @@ const Stations = () => {
                   placeholder="Search stations by name or location..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-white border-gray-300 text-black placeholder-gray-500 focus:border-blue-500"
+                  className="pl-10 bg-white border-gray-300 text-black placeholder-gray-500 focus:border-blue-500 font-inter"
                 />
               </div>
             </div>
             <div className="flex gap-4">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-40 bg-white border-gray-300 text-black">
+                <SelectTrigger className="w-40 bg-white border-gray-300 text-black font-inter font-medium">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -146,7 +155,7 @@ const Stations = () => {
                 </SelectContent>
               </Select>
               <Select value={connectorFilter} onValueChange={setConnectorFilter}>
-                <SelectTrigger className="w-48 bg-white border-gray-300 text-black">
+                <SelectTrigger className="w-48 bg-white border-gray-300 text-black font-inter font-medium">
                   <SelectValue placeholder="Connector Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -167,32 +176,32 @@ const Stations = () => {
             <Card key={station.id} className="glass-card hover-lift animate-fade-in-up border-gray-300" style={{ animationDelay: `${index * 0.1}s` }}>
               <CardHeader>
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg text-black font-poppins">{station.name}</CardTitle>
+                  <CardTitle className="text-lg text-black font-poppins font-bold">{station.name}</CardTitle>
                   <Badge className={getStatusColor(station.status)}>
                     {station.status}
                   </Badge>
                 </div>
-                <CardDescription className="flex items-center text-gray-600 font-inter">
-                  <MapPin className="h-4 w-4 mr-1" />
+                <CardDescription className="flex items-center text-black font-inter font-medium">
+                  <MapPin className="h-4 w-4 mr-1 text-black" />
                   {station.latitude.toFixed(6)}, {station.longitude.toFixed(6)}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-700 font-inter">Power Output:</span>
+                    <span className="text-sm text-black font-inter font-medium">Power Output:</span>
                     <span className="font-semibold text-blue-600 font-inter">{station.power_output} kW</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-700 font-inter">Connector:</span>
+                    <span className="text-sm text-black font-inter font-medium">Connector:</span>
                     <span className="font-semibold text-green-600 font-inter">{station.connector_type}</span>
                   </div>
                   <div className="flex gap-2 pt-4">
                     <StationDialog
                       trigger={
-                        <Button variant="outline" size="sm" className="flex-1 border-gray-300 text-black hover:bg-gray-100">
-                          <Edit className="mr-1 h-3 w-3" />
-                          Edit
+                        <Button variant="outline" size="sm" className="flex-1 border-gray-300 text-black hover:bg-gray-100 bg-white/90 font-medium">
+                          <Edit className="mr-1 h-3 w-3 text-black" />
+                          <span className="text-black font-inter font-medium">Edit</span>
                         </Button>
                       }
                       station={station}
@@ -201,11 +210,11 @@ const Stations = () => {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="flex-1 border-red-300 text-red-600 hover:bg-red-50"
+                      className="flex-1 border-red-300 text-red-600 hover:bg-red-50 bg-white/90 font-medium"
                       onClick={() => handleDeleteStation(station.id)}
                     >
-                      <Trash2 className="mr-1 h-3 w-3" />
-                      Delete
+                      <Trash2 className="mr-1 h-3 w-3 text-red-600" />
+                      <span className="text-red-600 font-inter font-medium">Delete</span>
                     </Button>
                   </div>
                 </div>
@@ -220,7 +229,7 @@ const Stations = () => {
               <Search className="h-12 w-12 mx-auto" />
             </div>
             <h3 className="text-lg font-semibold text-black mb-2 font-poppins">No stations found</h3>
-            <p className="text-gray-700 font-inter">
+            <p className="text-black font-inter font-medium">
               {stations.length === 0 
                 ? "Get started by adding your first charging station!" 
                 : "Try adjusting your search criteria or filters"
