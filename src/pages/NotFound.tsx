@@ -22,8 +22,8 @@ const NotFound = () => {
       <div className="text-center relative z-10 animate-fade-in">
         <div className="mb-8">
           <h1 className="text-8xl font-bold gradient-text mb-4 font-poppins animate-bounce-soft">404</h1>
-          <h2 className="text-3xl font-semibold text-white mb-2 font-poppins">Page Not Found</h2>
-          <p className="text-xl text-white/70 mb-8 font-inter">
+          <h2 className="text-3xl font-semibold text-black mb-2 font-poppins">Page Not Found</h2>
+          <p className="text-xl text-gray-700 mb-8 font-inter">
             Oops! The page you're looking for doesn't exist.
           </p>
         </div>
@@ -39,14 +39,14 @@ const NotFound = () => {
           <Button 
             variant="outline" 
             onClick={() => window.history.back()}
-            className="border-white/20 text-white hover:bg-white/10 hover-lift font-inter"
+            className="border-gray-300 text-black hover:bg-gray-100 hover-lift font-inter"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Go Back
           </Button>
         </div>
         
-        <div className="mt-12 text-white/50 font-inter">
+        <div className="mt-12 text-gray-600 font-inter">
           <p>Lost? Try navigating back to familiar territory.</p>
         </div>
       </div>

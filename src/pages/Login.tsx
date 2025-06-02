@@ -56,24 +56,24 @@ const Login = () => {
         {/* Logo */}
         <div className="text-center mb-8 animate-fade-in">
           <Link to="/" className="inline-flex items-center space-x-2 hover-glow rounded-lg px-4 py-2">
-            <Zap className="h-12 w-12 text-blue-400 animate-pulse-glow" />
+            <Zap className="h-12 w-12 text-blue-600 animate-pulse-glow" />
             <span className="text-3xl font-bold gradient-text font-poppins">ChargeHub</span>
           </Link>
-          <p className="text-white/70 mt-3 font-inter text-lg">Welcome back to your charging network</p>
+          <p className="text-gray-700 mt-3 font-inter text-lg">Welcome back to your charging network</p>
         </div>
 
         {/* Login Form */}
-        <Card className="glass-card shadow-2xl border-white/20 animate-scale-in">
+        <Card className="glass-card shadow-2xl border-gray-300 animate-scale-in">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center text-white font-poppins">Sign in</CardTitle>
-            <CardDescription className="text-center text-white/70 font-inter">
+            <CardTitle className="text-2xl text-center text-black font-poppins">Sign in</CardTitle>
+            <CardDescription className="text-center text-gray-700 font-inter">
               Enter your email and password to access your account
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-white font-inter">Email</Label>
+                <Label htmlFor="email" className="text-black font-inter">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -81,12 +81,12 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-blue-400"
+                  className="h-11 bg-white border-gray-300 text-black placeholder-gray-500 focus:border-blue-500"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-white font-inter">Password</Label>
+                <Label htmlFor="password" className="text-black font-inter">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -95,13 +95,13 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-11 pr-10 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-blue-400"
+                    className="h-11 pr-10 bg-white border-gray-300 text-black placeholder-gray-500 focus:border-blue-500"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-white/70"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-gray-700"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -122,9 +122,9 @@ const Login = () => {
               </Button>
             </form>
 
-            <p className="text-center text-sm text-white/70 mt-6 font-inter">
+            <p className="text-center text-sm text-gray-700 mt-6 font-inter">
               Don't have an account?{' '}
-              <Link to="/register" className="text-blue-400 hover:text-blue-300 font-medium hover-glow">
+              <Link to="/register" className="text-blue-600 hover:text-blue-500 font-medium hover-glow">
                 Sign up
               </Link>
             </p>

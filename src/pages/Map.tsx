@@ -50,8 +50,8 @@ const Map = () => {
       <div className="page-container flex items-center justify-center">
         <AnimatedBackground />
         <div className="text-center animate-fade-in">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-400 mx-auto"></div>
-          <p className="mt-6 text-white/80 font-inter text-lg">Loading map...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto"></div>
+          <p className="mt-6 text-black font-inter text-lg">Loading map...</p>
         </div>
       </div>
     );
@@ -62,21 +62,21 @@ const Map = () => {
       <AnimatedBackground />
       
       {/* Navigation - Enhanced visibility */}
-      <nav className="nav-glass border-b sticky top-0 z-50 bg-black/20 backdrop-blur-md">
+      <nav className="nav-glass border-b sticky top-0 z-50 bg-white/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-2 hover-glow rounded-lg px-3 py-2">
-              <Zap className="h-8 w-8 text-blue-400 animate-pulse-glow" />
-              <span className="text-xl font-bold text-white font-poppins">ChargeHub</span>
+              <Zap className="h-8 w-8 text-blue-600 animate-pulse-glow" />
+              <span className="text-xl font-bold text-black font-poppins">ChargeHub</span>
             </Link>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-white/90 font-inter bg-white/10 px-3 py-1 rounded-full">
+              <span className="text-sm text-black font-inter bg-gray-100 px-3 py-1 rounded-full">
                 Welcome, {user?.email}
               </span>
               <Link to="/stations">
                 <Button 
                   variant="ghost" 
-                  className="text-white bg-white/10 hover:bg-white/20 border border-white/20 hover-lift font-medium"
+                  className="text-black bg-gray-100 hover:bg-gray-200 border border-gray-300 hover-lift font-medium"
                 >
                   <List className="mr-2 h-4 w-4" />
                   List View
@@ -94,7 +94,7 @@ const Map = () => {
               <Button 
                 variant="outline" 
                 onClick={handleSignOut} 
-                className="border-red-400/30 text-red-300 hover:bg-red-500/10 hover:border-red-400 hover-lift font-medium"
+                className="border-red-400 text-red-600 hover:bg-red-50 hover:border-red-500 hover-lift font-medium"
               >
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
@@ -106,22 +106,22 @@ const Map = () => {
 
       <div className="flex h-[calc(100vh-64px)] relative z-10">
         {/* Sidebar - Enhanced visibility */}
-        <div className="w-96 glass-card border-r border-white/20 overflow-y-auto animate-slide-up bg-black/20 backdrop-blur-md">
+        <div className="w-96 glass-card border-r border-gray-300 overflow-y-auto animate-slide-up bg-white/90 backdrop-blur-md">
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-white font-poppins">
+              <h2 className="text-xl font-bold text-black font-poppins">
                 Charging Stations ({filteredStations.length})
               </h2>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-32 bg-white/20 border-white/30 text-white backdrop-blur-sm">
+                <SelectTrigger className="w-32 bg-white border-gray-300 text-black backdrop-blur-sm">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-900 border-white/20">
-                  <SelectItem value="all" className="text-white hover:bg-white/10">All</SelectItem>
-                  <SelectItem value="active" className="text-white hover:bg-white/10">Active</SelectItem>
-                  <SelectItem value="maintenance" className="text-white hover:bg-white/10">Maintenance</SelectItem>
-                  <SelectItem value="inactive" className="text-white hover:bg-white/10">Inactive</SelectItem>
+                <SelectContent className="bg-white border-gray-200">
+                  <SelectItem value="all" className="text-black hover:bg-gray-100">All</SelectItem>
+                  <SelectItem value="active" className="text-black hover:bg-gray-100">Active</SelectItem>
+                  <SelectItem value="maintenance" className="text-black hover:bg-gray-100">Maintenance</SelectItem>
+                  <SelectItem value="inactive" className="text-black hover:bg-gray-100">Inactive</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -130,34 +130,34 @@ const Map = () => {
               {filteredStations.map((station, index) => (
                 <Card 
                   key={station.id} 
-                  className={`cursor-pointer transition-all duration-300 hover-lift glass-card border-white/30 animate-fade-in-up bg-white/10 backdrop-blur-sm ${
-                    selectedStation?.id === station.id ? 'ring-2 ring-blue-400 shadow-lg bg-blue-500/20' : ''
+                  className={`cursor-pointer transition-all duration-300 hover-lift glass-card border-gray-300 animate-fade-in-up bg-white/90 backdrop-blur-sm ${
+                    selectedStation?.id === station.id ? 'ring-2 ring-blue-500 shadow-lg bg-blue-50' : ''
                   }`}
                   style={{ animationDelay: `${index * 0.05}s` }}
                   onClick={() => setSelectedStation(station)}
                 >
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start">
-                      <CardTitle className="text-base text-white font-poppins font-bold">
+                      <CardTitle className="text-base text-black font-poppins font-bold">
                         {station.name}
                       </CardTitle>
                       <Badge className={getStatusBadgeColor(station.status)}>
                         {station.status}
                       </Badge>
                     </div>
-                    <CardDescription className="text-sm text-white/80 font-inter font-medium">
+                    <CardDescription className="text-sm text-gray-700 font-inter font-medium">
                       {station.latitude.toFixed(6)}, {station.longitude.toFixed(6)}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div>
-                        <span className="text-white/70 font-inter">Power:</span>
-                        <span className="ml-1 font-semibold text-blue-300 font-inter">{station.power_output} kW</span>
+                        <span className="text-gray-600 font-inter">Power:</span>
+                        <span className="ml-1 font-semibold text-blue-600 font-inter">{station.power_output} kW</span>
                       </div>
                       <div>
-                        <span className="text-white/70 font-inter">Type:</span>
-                        <span className="ml-1 font-semibold text-green-300 text-xs font-inter">{station.connector_type}</span>
+                        <span className="text-gray-600 font-inter">Type:</span>
+                        <span className="ml-1 font-semibold text-green-600 text-xs font-inter">{station.connector_type}</span>
                       </div>
                     </div>
                   </CardContent>
@@ -167,7 +167,7 @@ const Map = () => {
 
             {filteredStations.length === 0 && (
               <div className="text-center py-8 animate-fade-in">
-                <p className="text-white/60 font-inter">No stations match the current filter</p>
+                <p className="text-gray-600 font-inter">No stations match the current filter</p>
               </div>
             )}
           </div>
