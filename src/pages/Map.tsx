@@ -61,8 +61,8 @@ const Map = () => {
     <div className="page-container">
       <AnimatedBackground />
       
-      {/* Navigation */}
-      <nav className="nav-glass border-b sticky top-0 z-50">
+      {/* Navigation - Enhanced visibility */}
+      <nav className="nav-glass border-b sticky top-0 z-50 bg-black/20 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-2 hover-glow rounded-lg px-3 py-2">
@@ -70,23 +70,32 @@ const Map = () => {
               <span className="text-xl font-bold text-white font-poppins">ChargeHub</span>
             </Link>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-white/70 font-inter">Welcome, {user?.email}</span>
+              <span className="text-sm text-white/90 font-inter bg-white/10 px-3 py-1 rounded-full">
+                Welcome, {user?.email}
+              </span>
               <Link to="/stations">
-                <Button variant="ghost" className="text-white hover:bg-white/10 hover-lift">
+                <Button 
+                  variant="ghost" 
+                  className="text-white bg-white/10 hover:bg-white/20 border border-white/20 hover-lift font-medium"
+                >
                   <List className="mr-2 h-4 w-4" />
                   List View
                 </Button>
               </Link>
               <StationDialog
                 trigger={
-                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover-lift">
+                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover-lift text-white font-medium shadow-lg">
                     <Plus className="mr-2 h-4 w-4" />
                     Add Station
                   </Button>
                 }
                 onSave={handleCreateStation}
               />
-              <Button variant="outline" onClick={handleSignOut} className="border-white/20 text-white hover:bg-white/10 hover-lift">
+              <Button 
+                variant="outline" 
+                onClick={handleSignOut} 
+                className="border-red-400/30 text-red-300 hover:bg-red-500/10 hover:border-red-400 hover-lift font-medium"
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
               </Button>
@@ -96,23 +105,23 @@ const Map = () => {
       </nav>
 
       <div className="flex h-[calc(100vh-64px)] relative z-10">
-        {/* Sidebar */}
-        <div className="w-96 glass-card border-r border-white/20 overflow-y-auto animate-slide-up">
+        {/* Sidebar - Enhanced visibility */}
+        <div className="w-96 glass-card border-r border-white/20 overflow-y-auto animate-slide-up bg-black/20 backdrop-blur-md">
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-white font-poppins">
                 Charging Stations ({filteredStations.length})
               </h2>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-32 bg-white/10 border-white/20 text-white">
+                <SelectTrigger className="w-32 bg-white/20 border-white/30 text-white backdrop-blur-sm">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
+                <SelectContent className="bg-gray-900 border-white/20">
+                  <SelectItem value="all" className="text-white hover:bg-white/10">All</SelectItem>
+                  <SelectItem value="active" className="text-white hover:bg-white/10">Active</SelectItem>
+                  <SelectItem value="maintenance" className="text-white hover:bg-white/10">Maintenance</SelectItem>
+                  <SelectItem value="inactive" className="text-white hover:bg-white/10">Inactive</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -121,31 +130,33 @@ const Map = () => {
               {filteredStations.map((station, index) => (
                 <Card 
                   key={station.id} 
-                  className={`cursor-pointer transition-all duration-300 hover-lift glass-card border-white/20 animate-fade-in-up ${
-                    selectedStation?.id === station.id ? 'ring-2 ring-blue-400 shadow-lg' : ''
+                  className={`cursor-pointer transition-all duration-300 hover-lift glass-card border-white/30 animate-fade-in-up bg-white/10 backdrop-blur-sm ${
+                    selectedStation?.id === station.id ? 'ring-2 ring-blue-400 shadow-lg bg-blue-500/20' : ''
                   }`}
                   style={{ animationDelay: `${index * 0.05}s` }}
                   onClick={() => setSelectedStation(station)}
                 >
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start">
-                      <CardTitle className="text-base text-white font-poppins">{station.name}</CardTitle>
+                      <CardTitle className="text-base text-white font-poppins font-bold">
+                        {station.name}
+                      </CardTitle>
                       <Badge className={getStatusBadgeColor(station.status)}>
                         {station.status}
                       </Badge>
                     </div>
-                    <CardDescription className="text-sm text-white/60 font-inter">
+                    <CardDescription className="text-sm text-white/80 font-inter font-medium">
                       {station.latitude.toFixed(6)}, {station.longitude.toFixed(6)}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div>
-                        <span className="text-white/60 font-inter">Power:</span>
+                        <span className="text-white/70 font-inter">Power:</span>
                         <span className="ml-1 font-semibold text-blue-300 font-inter">{station.power_output} kW</span>
                       </div>
                       <div>
-                        <span className="text-white/60 font-inter">Type:</span>
+                        <span className="text-white/70 font-inter">Type:</span>
                         <span className="ml-1 font-semibold text-green-300 text-xs font-inter">{station.connector_type}</span>
                       </div>
                     </div>
@@ -156,7 +167,7 @@ const Map = () => {
 
             {filteredStations.length === 0 && (
               <div className="text-center py-8 animate-fade-in">
-                <p className="text-white/50 font-inter">No stations match the current filter</p>
+                <p className="text-white/60 font-inter">No stations match the current filter</p>
               </div>
             )}
           </div>

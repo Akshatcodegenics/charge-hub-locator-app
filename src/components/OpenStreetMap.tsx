@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, X } from 'lucide-react';
+import { MapPin, X, Navigation } from 'lucide-react';
 import { ChargingStation } from '@/hooks/useChargingStations';
 
 // Dynamic import for Leaflet to avoid SSR issues
@@ -39,14 +39,19 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
   const getStatusBadgeColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'active':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/20 text-green-300 border-green-500/30';
       case 'maintenance':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
       case 'inactive':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-500/20 text-red-300 border-red-500/30';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
     }
+  };
+
+  const handleGetDirections = (station: ChargingStation) => {
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${station.latitude},${station.longitude}`;
+    window.open(googleMapsUrl, '_blank');
   };
 
   // Initialize Leaflet dynamically
@@ -99,28 +104,59 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
     markersRef.current.forEach(marker => marker.remove());
     markersRef.current = [];
 
-    // Add new markers
+    // Add new markers with station names
     stations.forEach(station => {
       const customIcon = L.divIcon({
         className: 'custom-marker',
-        html: `<div style="
-          width: 24px;
-          height: 24px;
-          background-color: ${getStatusColor(station.status)};
-          border: 3px solid white;
-          border-radius: 50%;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        ">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-            <circle cx="12" cy="10" r="3"/>
-          </svg>
-        </div>`,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
+        html: `
+          <div style="
+            position: relative;
+            width: 40px;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: auto;
+          ">
+            <div style="
+              width: 32px;
+              height: 32px;
+              background-color: ${getStatusColor(station.status)};
+              border: 3px solid white;
+              border-radius: 50%;
+              box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              position: relative;
+              z-index: 2;
+            ">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div style="
+              background: rgba(0, 0, 0, 0.8);
+              color: white;
+              padding: 4px 8px;
+              border-radius: 4px;
+              font-size: 12px;
+              font-weight: bold;
+              white-space: nowrap;
+              margin-top: 4px;
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              backdrop-filter: blur(4px);
+              font-family: 'Inter', sans-serif;
+              max-width: 120px;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            ">${station.name}</div>
+          </div>
+        `,
+        iconSize: [40, 50],
+        iconAnchor: [20, 40]
       });
 
       const marker = L.marker([station.latitude, station.longitude], { icon: customIcon })
@@ -140,7 +176,7 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
   // Highlight selected station
   useEffect(() => {
     if (selectedStation && mapRef.current) {
-      mapRef.current.setView([selectedStation.latitude, selectedStation.longitude], 13);
+      mapRef.current.setView([selectedStation.latitude, selectedStation.longitude], 15);
     }
   }, [selectedStation]);
 
@@ -148,46 +184,52 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
     <div className="relative w-full h-full">
       <div ref={mapContainer} className="absolute inset-0 rounded-lg" />
       
-      {/* Selected Station Details */}
+      {/* Selected Station Details - Enhanced visibility */}
       {selectedStation && (
-        <div className="absolute top-4 left-4 w-80 bg-white rounded-lg shadow-lg p-6 z-[1000]">
+        <div className="absolute top-4 left-4 w-80 bg-black/80 backdrop-blur-md rounded-xl shadow-2xl p-6 z-[1000] border border-white/20">
           <div className="flex justify-between items-start mb-4">
-            <h3 className="text-lg font-bold">{selectedStation.name}</h3>
+            <h3 className="text-lg font-bold text-white font-poppins">{selectedStation.name}</h3>
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={() => onStationSelect(null)}
-              className="text-gray-400 hover:text-gray-600 p-1"
+              className="text-white/70 hover:text-white hover:bg-white/10 p-1"
             >
               <X className="h-4 w-4" />
             </Button>
           </div>
           
           <div className="space-y-3">
-            <div className="flex items-center text-gray-600">
-              <MapPin className="h-4 w-4 mr-2" />
-              {selectedStation.latitude.toFixed(6)}, {selectedStation.longitude.toFixed(6)}
+            <div className="flex items-center text-white/80">
+              <MapPin className="h-4 w-4 mr-2 text-blue-400" />
+              <span className="font-inter text-sm">
+                {selectedStation.latitude.toFixed(6)}, {selectedStation.longitude.toFixed(6)}
+              </span>
             </div>
             
-            <div className="flex justify-between">
-              <span className="text-gray-600">Status:</span>
+            <div className="flex justify-between items-center">
+              <span className="text-white/70 font-inter">Status:</span>
               <Badge className={getStatusBadgeColor(selectedStation.status)}>
                 {selectedStation.status}
               </Badge>
             </div>
             
-            <div className="flex justify-between">
-              <span className="text-gray-600">Power Output:</span>
-              <span className="font-semibold">{selectedStation.power_output} kW</span>
+            <div className="flex justify-between items-center">
+              <span className="text-white/70 font-inter">Power Output:</span>
+              <span className="font-semibold text-blue-300 font-inter">{selectedStation.power_output} kW</span>
             </div>
             
-            <div className="flex justify-between">
-              <span className="text-gray-600">Connector Type:</span>
-              <span className="font-semibold">{selectedStation.connector_type}</span>
+            <div className="flex justify-between items-center">
+              <span className="text-white/70 font-inter">Connector Type:</span>
+              <span className="font-semibold text-green-300 font-inter">{selectedStation.connector_type}</span>
             </div>
             
-            <div className="flex gap-2 pt-4">
-              <Button variant="outline" size="sm" className="flex-1">
+            <div className="pt-4">
+              <Button 
+                onClick={() => handleGetDirections(selectedStation)}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium hover-lift"
+              >
+                <Navigation className="mr-2 h-4 w-4" />
                 Get Directions
               </Button>
             </div>
@@ -195,27 +237,27 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
         </div>
       )}
 
-      {/* Legend */}
-      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-md p-4 z-[1000]">
-        <h3 className="font-semibold text-sm mb-2">Station Status</h3>
+      {/* Legend - Enhanced visibility */}
+      <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md rounded-lg shadow-xl p-4 z-[1000] border border-white/20">
+        <h3 className="font-semibold text-sm mb-2 text-white font-poppins">Station Status</h3>
         <div className="space-y-1 text-xs">
           <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-green-500 mr-2" />
-            <span>Active</span>
+            <div className="w-3 h-3 rounded-full bg-green-500 mr-2 border border-white/30" />
+            <span className="text-white/90 font-inter">Active</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2" />
-            <span>Maintenance</span>
+            <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2 border border-white/30" />
+            <span className="text-white/90 font-inter">Maintenance</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-red-500 mr-2" />
-            <span>Inactive</span>
+            <div className="w-3 h-3 rounded-full bg-red-500 mr-2 border border-white/30" />
+            <span className="text-white/90 font-inter">Inactive</span>
           </div>
         </div>
       </div>
 
-      {/* Map Attribution */}
-      <div className="absolute bottom-4 right-4 bg-white rounded px-2 py-1 text-xs text-gray-600 z-[1000]">
+      {/* Map Attribution - Enhanced visibility */}
+      <div className="absolute bottom-4 right-4 bg-black/80 backdrop-blur-md rounded px-3 py-2 text-xs text-white/80 z-[1000] border border-white/20">
         Powered by OpenStreetMap
       </div>
     </div>
